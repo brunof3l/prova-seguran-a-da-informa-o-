@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Interativo de Revisão de Segurança da Informação</title>
+  <style>
+    /* Reset e variaveis visuais do tema dark */
+    :root {
+      --bg: #09111f;
+      --bg-soft: #0f172a;
+      --panel: rgba(15, 23, 42, 0.88);
+      --panel-strong: #111827;
+      --line: rgba(148, 163, 184, 0.18);
+      --text: #e5eefc;
+      --muted: #a9b7d0;
+      --accent: #7c3aed;
+      --accent-2: #22c55e;
+      --accent-3: #38bdf8;
+      --warning: #f59e0b;
+      --shadow: 0 24px 60px rgba(2, 6, 23, 0.45);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --container: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 24%),
+        linear-gradient(180deg, #020617 0%, #08101e 48%, #0a1324 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(var(--container), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    /* Navegacao fixa principal */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(2, 6, 23, 0.78);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(34, 197, 94, 0.2));
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      box-shadow: 0 0 24px rgba(124, 58, 237, 0.2);
+    }
+
+    .brand-text h1 {
+      font-size: 1rem;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .nav-links a {
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      transition: 0.25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-color: rgba(34, 197, 94, 0.45);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.12), 0 10px 24px rgba(34, 197, 94, 0.08);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    main {
+      padding: 2rem 0 4rem;
+    }
+
+    /* Hero de abertura */
+    .hero {
+      padding: 2rem 0 1.5rem;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.25fr 0.85fr;
+      gap: 1.5rem;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(17, 24, 39, 0.88));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card::before,
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(12px);
+      opacity: 0.35;
+    }
+
+    .hero-card::before {
+      width: 220px;
+      height: 220px;
+      right: -50px;
+      top: -40px;
+      background: rgba(124, 58, 237, 0.55);
+    }
+
+    .hero-card::after {
+      width: 180px;
+      height: 180px;
+      left: -30px;
+      bottom: -50px;
+      background: rgba(34, 197, 94, 0.28);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      color: #b6f3ca;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      line-height: 1.05;
+      max-width: 12ch;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 62ch;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 999px;
+      padding: 0.9rem 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--accent), #5b21b6);
+      box-shadow: 0 14px 30px rgba(124, 58, 237, 0.28);
+    }
+
+    .btn.secondary {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 1rem;
+      align-content: center;
+    }
+
+    .stat-card {
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius-md);
+      background: rgba(2, 6, 23, 0.4);
+      border: 1px solid var(--line);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #dff7e8;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* Secoes e cards */
+    .section {
+      padding: 1.6rem 0;
+      scroll-margin-top: 96px;
+    }
+
+    .section-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .section-header .tag {
+      display: inline-block;
+      margin-bottom: 0.7rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      background: rgba(56, 189, 248, 0.07);
+      color: #b7e9fb;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section-header h3 {
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      max-width: 72ch;
+    }
+
+    .content-panel {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.8));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 1.35rem;
+      box-shadow: var(--shadow);
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid.cards-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .grid.cards-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.cards-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(2, 6, 23, 0.42);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.15rem;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0.95;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124, 58, 237, 0.34);
+      box-shadow: 0 18px 36px rgba(2, 6, 23, 0.28);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      margin-bottom: 0.85rem;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.24), rgba(34, 197, 94, 0.16));
+      border: 1px solid rgba(124, 58, 237, 0.25);
+    }
+
+    .card h4 {
+      margin-bottom: 0.45rem;
+      font-size: 1.1rem;
+    }
+
+    .card p,
+    .card li,
+    .text-block p,
+    .text-block li,
+    td,
+    th {
+      color: var(--muted);
+    }
+
+    .text-block {
+      margin-top: 1rem;
+      padding: 1.15rem;
+      border-radius: var(--radius-lg);
+      background: rgba(2, 6, 23, 0.35);
+      border: 1px solid var(--line);
+    }
+
+    .text-block h4 {
+      margin-bottom: 0.75rem;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    .text-block p + p,
+    .text-block ul,
+    .text-block ol,
+    .text-block table {
+      margin-top: 0.75rem;
+    }
+
+    .text-block ul,
+    .text-block ol {
+      padding-left: 1.2rem;
+    }
+
+    .text-block strong {
+      color: #f1f5f9;
+    }
+
+    /* Infografico comparativo */
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .compare-card {
+      padding: 1.2rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: rgba(2, 6, 23, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compare-card.sym::after,
+    .compare-card.asym::after {
+      content: "";
+      position: absolute;
+      inset: auto -30px -30px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      opacity: 0.15;
+      filter: blur(6px);
+    }
+
+    .compare-card.sym::after {
+      background: var(--accent-2);
+    }
+
+    .compare-card.asym::after {
+      background: var(--accent);
+    }
+
+    .compare-title {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .compare-badge {
+      min-width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .compare-card.sym .compare-badge {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
+
+    .compare-card.asym .compare-badge {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    }
+
+    .compare-card ul {
+      padding-left: 1.1rem;
+    }
+
+    /* Accordion da visao do professor */
+    .accordion {
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(2, 6, 23, 0.48);
+      overflow: hidden;
+    }
+
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .accordion summary span:last-child {
+      color: var(--accent-2);
+      transition: transform 0.2s ease;
+    }
+
+    .accordion[open] summary span:last-child {
+      transform: rotate(45deg);
+    }
+
+    .accordion-body {
+      padding: 0 1.1rem 1rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(148, 163, 184, 0.08);
+    }
+
+    .accordion-body p + p {
+      margin-top: 0.65rem;
+    }
+
+    .answer {
+      margin-top: 0.6rem;
+      padding: 0.85rem;
+      border-radius: var(--radius-sm);
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    /* Bloco visual do Lamport */
+    .lamport-flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .flow-step {
+      padding: 0.95rem;
+      border-radius: var(--radius-md);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .flow-step strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #d8b4fe;
+    }
+
+    .callout {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem;
+      border-left: 4px solid var(--warning);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      background: rgba(245, 158, 11, 0.08);
+      color: #fde68a;
+    }
+
+    /* Tabela de siglas */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+      background: rgba(2, 6, 23, 0.32);
+    }
+
+    th,
+    td {
+      padding: 0.95rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    th {
+      color: var(--text);
+      background: rgba(15, 23, 42, 0.92);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Flashcards */
+    .flashcards-panel {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .flashcard-stage {
+      perspective: 1200px;
+    }
+
+    .flashcard {
+      position: relative;
+      min-height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease;
+    }
+
+    .flashcard.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashface {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.9));
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .flashface.back {
+      transform: rotateY(180deg);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .flash-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .flash-pill {
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.24);
+      color: #decdfd;
+      font-weight: 600;
+    }
+
+    .flashface h4 {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.25;
+      margin: 1.2rem 0;
+    }
+
+    .flashface p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .flash-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .flash-sidebar {
+      padding: 1.2rem;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: rgba(2, 6, 23, 0.42);
+    }
+
+    .flash-sidebar h4 {
+      margin-bottom: 0.7rem;
+    }
+
+    .flash-sidebar ul {
+      padding-left: 1.2rem;
+      color: var(--muted);
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .progress {
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.16);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 12.5%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.35s ease;
+    }
+
+    .helper-note {
+      margin-top: 0.8rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* Simulado dinamico */
+    .quiz-shell {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .quiz-main,
+    .quiz-side {
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: rgba(2, 6, 23, 0.42);
+      box-shadow: var(--shadow);
+    }
+
+    .quiz-main {
+      padding: 1.4rem;
+    }
+
+    .quiz-side {
+      padding: 1.2rem;
+      display: grid;
+      gap: 1rem;
+      align-content: start;
+    }
+
+    .quiz-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .quiz-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.38rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      background: rgba(34, 197, 94, 0.08);
+      color: #c7f9d8;
+      font-weight: 600;
+    }
+
+    .quiz-main h4,
+    .quiz-side h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .quiz-question {
+      font-size: clamp(1.2rem, 2.6vw, 1.7rem);
+      line-height: 1.35;
+      margin-bottom: 1.2rem;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .quiz-option {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.1rem;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .quiz-option:hover:not(:disabled),
+    .quiz-option:focus-visible:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: rgba(124, 58, 237, 0.35);
+      box-shadow: 0 12px 26px rgba(2, 6, 23, 0.22);
+      outline: none;
+    }
+
+    .quiz-option:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .quiz-option.correct {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.16);
+      color: #ddfbe6;
+    }
+
+    .quiz-option.incorrect {
+      border-color: rgba(239, 68, 68, 0.55);
+      background: rgba(239, 68, 68, 0.16);
+      color: #ffe2e2;
+    }
+
+    .quiz-explanation {
+      min-height: 124px;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(56, 189, 248, 0.16);
+      background: rgba(56, 189, 248, 0.06);
+    }
+
+    .quiz-explanation.hidden,
+    .quiz-screen.hidden {
+      display: none;
+    }
+
+    .quiz-explanation p,
+    .quiz-side p,
+    .quiz-side li,
+    .quiz-result p {
+      color: var(--muted);
+    }
+
+    .quiz-screen {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .quiz-screen.start,
+    .quiz-screen.result {
+      min-height: 360px;
+      place-content: center;
+      text-align: left;
+    }
+
+    .quiz-screen.result {
+      text-align: center;
+    }
+
+    .quiz-side ul {
+      padding-left: 1.2rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .quiz-score {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1;
+      color: #dff7e8;
+      margin: 0.35rem 0 0.55rem;
+    }
+
+    .quiz-feedback {
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      border: 1px solid rgba(124, 58, 237, 0.22);
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .quiz-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    footer {
+      padding: 1rem 0 2.5rem;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    /* Responsividade */
+    @media (max-width: 980px) {
+      .hero-card,
+      .quiz-shell,
+      .flashcards-panel,
+      .grid.cards-4,
+      .grid.cards-3,
+      .compare,
+      .lamport-flow {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .hero-card,
+      .quiz-shell,
+      .flashcards-panel,
+      .compare,
+      .grid.cards-4,
+      .grid.cards-3,
+      .grid.cards-2,
+      .lamport-flow {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        display: grid;
+        align-items: start;
+      }
+
+      .nav-links {
+        width: 100%;
+      }
+
+      .nav-links a {
+        flex: 1 1 150px;
+        text-align: center;
+      }
+
+      .hero-card {
+        padding: 1.4rem;
+      }
+
+      .content-panel {
+        padding: 1rem;
+      }
+
+      .flashcard {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navegacao fixa para facilitar a revisao por modulos -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🛡</div>
+        <div class="brand-text">
+          <h1>Hub Interativo de Revisão</h1>
+          <span>Segurança da Informação</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Navegação principal">
+        <a href="#criptografia">Módulo 1: Criptografia</a>
+        <a href="#autenticacao">Módulo 2: Autenticação</a>
+        <a href="#simulado-dinamico">Simulado Dinâmico</a>
+        <a href="#flashcards">Flashcards</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-card">
+          <div>
+            <span class="eyebrow">EdTech + Revisão Guiada</span>
+            <h2>Segurança da Informação para revisar, memorizar e acertar na prova.</h2>
+            <p>
+              Este hub organiza os conceitos-chave de criptografia e autenticação em uma experiência visual,
+              responsiva e prática. A cada bloco teórico, você encontra uma leitura objetiva e uma
+              <strong>Visão do Professor</strong> com a resposta técnica ideal para prova.
+            </p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#criptografia">Começar pelo Módulo 1</a>
+              <a class="btn secondary" href="#flashcards">Ir para o Simulador</a>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong>2 módulos</strong>
+              <span>Criptografia e autenticação em revisão orientada.</span>
+            </div>
+            <div class="stat-card">
+              <strong>Visão do Professor</strong>
+              <span>Perguntas de prova com resposta técnica para nota máxima.</span>
+            </div>
+            <div class="stat-card">
+              <strong>8+ flashcards</strong>
+              <span>Treino rápido para consolidar os conceitos críticos.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modulo 1: Criptografia -->
+    <section id="criptografia" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Módulo 1</span>
+          <h3>Criptografia</h3>
+          <p>
+            Nesta etapa, revise os elementos fundamentais do processo criptográfico, as diferenças entre
+            técnicas clássicas e o contraste entre criptografia simétrica e assimétrica.
+          </p>
+        </div>
+
+        <div class="content-panel">
+          <!-- Cards conceituais principais -->
+          <div class="grid cards-4">
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">📝</div>
+              <h4>Texto Claro</h4>
+              <p>É a mensagem original, legível e compreensível antes de qualquer processo de cifragem.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🔒</div>
+              <h4>Texto Cifrado</h4>
+              <p>É o resultado da aplicação da criptografia, tornando a mensagem ilegível para quem não tem a chave correta.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">⚙️</div>
+              <h4>Algoritmo</h4>
+              <p>É o conjunto de regras matemáticas e lógicas que transforma o texto claro em texto cifrado.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🗝️</div>
+              <h4>Chave</h4>
+              <p>É o parâmetro que controla o algoritmo e define como a cifra será aplicada ou revertida.</p>
+            </article>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Quais são os quatro elementos básicos presentes em um processo de criptografia?</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> Os elementos básicos são texto claro, texto cifrado, algoritmo e chave. O texto claro é a mensagem original; o texto cifrado é a mensagem protegida; o algoritmo realiza a transformação; e a chave parametriza a operação de cifragem e decifragem.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Explicacao das cifras classicas -->
+          <div class="text-block">
+            <h4>Transposição x Substituição</h4>
+            <p>
+              Na <strong>transposição</strong>, os caracteres mantêm sua identidade, mas mudam de posição.
+              O foco está no rearranjo da ordem dos símbolos. O exemplo citado é <strong>Licurgo</strong>.
+            </p>
+            <p>
+              Na <strong>substituição</strong>, cada símbolo é trocado por outro símbolo, preservando normalmente
+              a posição na mensagem. O foco está na troca de caracteres. Os exemplos citados são
+              <strong>César</strong> e <strong>Enigma</strong>.
+            </p>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Qual é a diferença entre cifra de transposição e cifra de substituição?</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> Na cifra de transposição, os caracteres não são trocados, apenas suas posições são rearranjadas. Na cifra de substituição, os caracteres são trocados por outros símbolos, mantendo em geral a posição relativa. Licurgo representa transposição; César e Enigma representam substituição.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Infografico comparativo -->
+          <div class="compare" aria-label="Comparativo entre criptografia simétrica e assimétrica">
+            <article class="compare-card sym">
+              <div class="compare-title">
+                <div class="compare-badge">S</div>
+                <div>
+                  <h4>Criptografia Simétrica</h4>
+                  <p>Mesma chave para cifrar e decifrar.</p>
+                </div>
+              </div>
+              <ul>
+                <li><strong>Rápida</strong> para processamento.</li>
+                <li>Usa <strong>1 chave</strong>.</li>
+                <li>Tem <strong>problema de distribuição</strong> da chave.</li>
+              </ul>
+            </article>
+            <article class="compare-card asym">
+              <div class="compare-title">
+                <div class="compare-badge">A</div>
+                <div>
+                  <h4>Criptografia Assimétrica</h4>
+                  <p>Par de chaves para operações complementares.</p>
+                </div>
+              </div>
+              <ul>
+                <li>Exemplo clássico: <strong>RSA</strong>.</li>
+                <li>Usa <strong>par de chaves Pública/Privada</strong>.</li>
+                <li><strong>Resolve a distribuição</strong> da chave secreta.</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Compare criptografia simétrica e assimétrica, com foco em distribuição de chaves.</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> A criptografia simétrica é mais rápida e utiliza uma única chave para cifrar e decifrar, mas sofre com o problema da distribuição segura dessa chave. A criptografia assimétrica, como o RSA, utiliza um par de chaves pública e privada, resolvendo o problema de distribuição da chave secreta.</p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modulo 2: Autenticacao -->
+    <section id="autenticacao" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Módulo 2</span>
+          <h3>Autenticação</h3>
+          <p>
+            Aqui estão os fatores de autenticação, a lógica por trás de hash e salt, além dos conceitos
+            avançados mais cobrados em revisões e avaliações.
+          </p>
+        </div>
+
+        <div class="content-panel">
+          <!-- Fatores de autenticacao -->
+          <div class="grid cards-4">
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🧠</div>
+              <h4>SYK</h4>
+              <p><strong>Sabe:</strong> Senhas. Baseia-se em algo que o usuário conhece.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">📲</div>
+              <h4>SYH</h4>
+              <p><strong>Tem:</strong> Tokens. Baseia-se em algo que o usuário possui.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🧬</div>
+              <h4>SYA</h4>
+              <p><strong>É:</strong> Biometria. Baseia-se em algo que o usuário é.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">➕</div>
+              <h4>MFA</h4>
+              <p>É a combinação de múltiplos fatores, somando conhecimento, posse e/ou característica biométrica.</p>
+            </article>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> O que significam SYK, SYH, SYA e como isso se relaciona com MFA?</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> SYK significa algo que o usuário sabe, como senha; SYH significa algo que o usuário tem, como token; SYA significa algo que o usuário é, como biometria. MFA é a autenticação multifator, ou seja, a combinação de dois ou mais fatores distintos de autenticação.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Hash e Salt -->
+          <div class="text-block">
+            <h4>Hash e Salt</h4>
+            <p>
+              <strong>Hash</strong> pode ser entendido como um <strong>triturador sem volta</strong>:
+              ele transforma um dado de entrada em uma saída resumida, sem processo prático de reversão.
+            </p>
+            <p>
+              O <strong>Sal (Salt)</strong> é um valor adicional inserido antes do cálculo do hash para que senhas
+              iguais gerem resultados diferentes. Isso dificulta ataques com tabelas pré-computadas,
+              especialmente as <strong>Rainbow Tables</strong>.
+            </p>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Qual é o papel do salt no armazenamento seguro de senhas?</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> O salt é um valor aleatório adicionado à senha antes do cálculo do hash. Sua função é impedir que senhas iguais produzam hashes iguais e mitigar ataques baseados em Rainbow Tables, dificultando o uso de tabelas pré-computadas.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Conceitos avancados -->
+          <div class="text-block">
+            <h4>Conceitos Avançados: Algoritmo de Lamport (OTP)</h4>
+            <p>
+              O Algoritmo de Lamport (OTP) utiliza uma cadeia de valores derivados por função hash para
+              autenticação de uso único. A ideia é gerar uma sequência de senhas descartáveis com base em
+              aplicações sucessivas de hash.
+            </p>
+            <div class="lamport-flow" aria-label="Fluxo visual do Algoritmo de Lamport">
+              <div class="flow-step">
+                <strong>Passo 1</strong>
+                Gera-se uma semente inicial.
+              </div>
+              <div class="flow-step">
+                <strong>Passo 2</strong>
+                Aplica-se hash repetidas vezes para formar a cadeia.
+              </div>
+              <div class="flow-step">
+                <strong>Passo 3</strong>
+                O servidor guarda um valor de referência da sequência.
+              </div>
+              <div class="flow-step">
+                <strong>Passo 4</strong>
+                Cada autenticação usa o valor imediatamente anterior da cadeia.
+              </div>
+            </div>
+            <div class="callout">
+              <strong>A utilização é no sentido INVERSO da geração (Valida aplicando Hash em Sn-1 para comparar com Sn).</strong>
+            </div>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Explique a lógica de validação do Algoritmo de Lamport (OTP).</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> No Algoritmo de Lamport, a utilização ocorre no sentido inverso da geração da cadeia. A validação é feita aplicando a função hash em Sn-1 para comparar o resultado com Sn previamente armazenado. Se coincidir, o valor apresentado é aceito como válido.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Tabela de siglas importantes -->
+          <div class="text-block">
+            <h4>Siglas Importantes em Segurança</h4>
+            <div class="table-wrap">
+              <table aria-label="Tabela de siglas de segurança">
+                <thead>
+                  <tr>
+                    <th>Sigla</th>
+                    <th>Significado / Contexto</th>
+                    <th>Área</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>X.509</td>
+                    <td>Certificado Digital</td>
+                    <td>Infraestrutura de chaves e identidade</td>
+                  </tr>
+                  <tr>
+                    <td>PAM</td>
+                    <td>Pluggable Authentication Modules</td>
+                    <td>Unix</td>
+                  </tr>
+                  <tr>
+                    <td>LDAP / RADIUS</td>
+                    <td>Protocolos e serviços usados em autenticação centralizada</td>
+                    <td>Redes</td>
+                  </tr>
+                  <tr>
+                    <td>OAuth / SAML</td>
+                    <td>Padrões de autorização e federação de identidade</td>
+                    <td>Web / Internet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> O que representa o padrão X.509 e em que contexto ele aparece?</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> X.509 é o padrão associado a certificados digitais, usado em contextos de identidade digital e infraestrutura de chaves públicas.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Biometria 1:1 e 1:N -->
+          <div class="text-block">
+            <h4>Biometria 1:1 x 1:N</h4>
+            <p>
+              Na biometria <strong>1:1 (Verificação)</strong>, o sistema compara a amostra apresentada com um único
+              registro esperado, normalmente associado a uma identidade já declarada.
+            </p>
+            <p>
+              Na biometria <strong>1:N (Identificação)</strong>, o sistema compara a amostra apresentada com vários
+              registros de uma base inteira, tentando descobrir quem é o usuário entre muitos candidatos.
+            </p>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <p><strong>Pergunta técnica:</strong> Diferencie biometria 1:1 de biometria 1:N.</p>
+              <div class="answer">
+                <p><strong>Resposta exata/técnica:</strong> Na biometria 1:1 ocorre verificação, ou seja, a amostra é comparada com um único modelo associado a uma identidade informada. Na biometria 1:N ocorre identificação, em que a amostra é comparada com todos os registros da base para descobrir a identidade do indivíduo.</p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Secao de quiz interativo de escolha multipla -->
+    <section id="simulado-dinamico" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Novo Simulador</span>
+          <h3>Simulado Dinâmico</h3>
+          <p>
+            Inicia um ciclo com 20 questões sorteadas, responde uma de cada vez e recebe feedback imediato
+            com explicação técnica antes de avançar.
+          </p>
+        </div>
+
+        <div class="quiz-shell">
+          <div class="quiz-main">
+            <section class="quiz-screen start" id="quizStartScreen">
+              <span class="eyebrow">Treino com correção imediata</span>
+              <h4>Pronto para testar os teus conhecimentos?</h4>
+              <p>
+                O sistema baralha o banco de questões, monta um conjunto de 20 perguntas e apresenta
+                correção instantânea com explicação. Quando terminares, podes refazer o simulado com novo sorteio.
+              </p>
+              <div class="quiz-actions">
+                <button class="btn primary" id="startQuizButton" type="button">Iniciar Simulado</button>
+              </div>
+            </section>
+
+            <section class="quiz-screen hidden" id="quizQuestionScreen">
+              <div class="quiz-status">
+                <span class="quiz-badge" id="quizProgress">Questão 1 de 20</span>
+                <span id="quizScoreLive">Pontuação: 0</span>
+              </div>
+
+              <h4 class="quiz-question" id="quizQuestion">
+                Pergunta do simulado.
+              </h4>
+
+              <div class="quiz-options" id="quizOptions" aria-label="Alternativas da questão"></div>
+
+              <div class="quiz-explanation hidden" id="quizExplanationPanel">
+                <h4>Explicação</h4>
+                <p id="quizExplanationText"></p>
+              </div>
+
+              <div class="quiz-actions">
+                <button class="btn secondary" id="nextQuizButton" type="button" disabled>Próxima Questão</button>
+              </div>
+            </section>
+
+            <section class="quiz-screen result hidden" id="quizResultScreen">
+              <span class="eyebrow">Resultado Final</span>
+              <h4>Simulado concluído</h4>
+              <div class="quiz-score" id="quizFinalScore">Acertaste 0/20</div>
+              <div class="quiz-feedback">
+                <p id="quizFinalMessage">Mensagem final do desempenho.</p>
+              </div>
+              <div class="quiz-actions" style="justify-content:center;">
+                <button class="btn primary" id="restartQuizButton" type="button">Refazer Simulado</button>
+              </div>
+            </section>
+          </div>
+
+          <aside class="quiz-side">
+            <div>
+              <h4>Como funciona</h4>
+              <ul>
+                <li>Recebes 1 pergunta de cada vez, com 4 alternativas clicáveis.</li>
+                <li>A correção aparece de imediato com verde para certo e vermelho para errado.</li>
+                <li>A explicação surge na interface e só depois podes avançar.</li>
+                <li>No fim, o sistema mostra a tua pontuação e permite refazer o ciclo.</li>
+              </ul>
+            </div>
+
+            <div class="quiz-feedback">
+              <h4>Estrutura do banco</h4>
+              <p>
+                Cada questão usa as propriedades <strong>pergunta</strong>, <strong>alternativas</strong>,
+                <strong>respostaCorreta</strong> e <strong>explicacao</strong>.
+              </p>
+            </div>
+
+            <div class="quiz-feedback">
+              <h4>Nota técnica</h4>
+              <p>
+                O sorteio usa Fisher-Yates. Enquanto existir menos de 20 questões no banco, o sistema continua
+                funcional ao reciclar o conjunto embaralhado; assim que colares 20 ou mais questões, o ciclo fica
+                exatamente com 20 questões aleatórias do teu banco.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulador final em JavaScript -->
+    <section id="flashcards" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Simulador</span>
+          <h3>Flashcards de Memorização</h3>
+          <p>
+            Treine os pontos mais cobrados com um cartão por vez. Clique em <strong>Virar Cartão</strong>
+            para revelar a resposta e avance até completar a revisão.
+          </p>
+        </div>
+
+        <div class="flashcards-panel">
+          <div class="flashcard-stage">
+            <div class="flashcard" id="flashcard" aria-live="polite">
+              <article class="flashface front">
+                <div class="flash-meta">
+                  <span class="flash-pill">Pergunta</span>
+                  <span id="flashCounter">1 / 8</span>
+                </div>
+                <div>
+                  <h4 id="flashQuestion">O que é o padrão X.509?</h4>
+                  <p>Leia a pergunta, tente responder mentalmente e depois vire o cartão para conferir.</p>
+                </div>
+                <p class="helper-note">Dica: responda em linguagem técnica curta, como faria em uma prova.</p>
+              </article>
+
+              <article class="flashface back">
+                <div class="flash-meta">
+                  <span class="flash-pill">Resposta</span>
+                  <span id="flashTopic">Tema</span>
+                </div>
+                <div>
+                  <h4 id="flashAnswer">Padrão para Certificados Digitais.</h4>
+                  <p>Use esta resposta como referência para memorização objetiva.</p>
+                </div>
+                <p class="helper-note">Compare sua formulação com a resposta ideal e refine a precisão técnica.</p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="flash-sidebar">
+            <h4>Como usar</h4>
+            <ul>
+              <li>Leia a pergunta e tente responder sem olhar.</li>
+              <li>Vire o cartão para validar sua resposta.</li>
+              <li>Avance para revisar os temas críticos da prova.</li>
+            </ul>
+
+            <div class="progress">
+              <p id="progressLabel">Progresso: 1 de 8 cartões</p>
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+
+            <div class="flash-controls">
+              <button class="btn primary" id="flipButton" type="button">Virar Cartão</button>
+              <button class="btn secondary" id="nextButton" type="button">Próximo</button>
+              <button class="btn secondary" id="prevButton" type="button">Anterior</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Hub Interativo de Revisão de Segurança da Informação • pronto para estudo, revisão e memorização.
+    </div>
+  </footer>
+
+  <script>
+    const bancoDeQuestoes = [
+  // MÓDULO: CRIPTOGRAFIA (Conceitos e História)
+  {
+    pergunta: "Qual é a principal diferença entre uma cifra de substituição e uma de transposição?",
+    alternativas: [
+      "A substituição troca a posição dos caracteres, a transposição altera o alfabeto.",
+      "A transposição apenas muda a ordem das letras (anagrama), enquanto a substituição troca um caractere por outro diferente.",
+      "Não há diferença, ambas são métodos de criptografia assimétrica.",
+      "A substituição requer chaves públicas, a transposição chaves privadas."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Transposição embaralha a posição (ex: Bastão de Licurgo). Substituição troca a letra (ex: Cifra de César, A vira D)."
+  },
+  {
+    pergunta: "Na terminologia criptográfica, o que define a 'Chave'?",
+    alternativas: [
+      "O algoritmo matemático em si.",
+      "O texto original legível.",
+      "O parâmetro de controle que, aliado ao algoritmo, cifra ou decifra a mensagem.",
+      "A mensagem embaralhada que transita na rede."
+    ],
+    respostaCorreta: 2,
+    explicacao: "A chave é o 'segredo' ou parâmetro que faz o algoritmo funcionar de forma específica para aquela comunicação."
+  },
+  {
+    pergunta: "A máquina Enigma, utilizada na Segunda Guerra Mundial, baseava-se principalmente em qual método criptográfico?",
+    alternativas: [
+      "Transposição simples.",
+      "Criptografia de chave assimétrica (RSA).",
+      "Substituição poli-alfabética através de rotores mecânicos.",
+      "Algoritmo de Hash SHA-256."
+    ],
+    respostaCorreta: 2,
+    explicacao: "A Enigma usava rotores que mudavam o alfabeto de substituição a cada tecla pressionada (poli-alfabética)."
+  },
+  
+  // MÓDULO: CRIPTOGRAFIA (Simétrica x Assimétrica)
+  {
+    pergunta: "Qual é a maior desvantagem da criptografia simétrica em uma rede com muitos usuários?",
+    alternativas: [
+      "A lentidão no processamento dos dados.",
+      "O problema da distribuição segura das chaves.",
+      "A impossibilidade de reverter o texto cifrado.",
+      "O uso obrigatório de biometria."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Como a chave que cifra é a mesma que decifra, enviar essa chave secreta para o destinatário pela rede de forma segura é o maior desafio."
+  },
+  {
+    pergunta: "Na criptografia assimétrica (ex: RSA), como o remetente deve proceder para enviar uma mensagem confidencial para o destinatário?",
+    alternativas: [
+      "Cifrar a mensagem com a sua própria Chave Privada.",
+      "Cifrar a mensagem com a Chave Pública do destinatário.",
+      "Cifrar a mensagem com a Chave Privada do destinatário.",
+      "Cifrar a mensagem com a sua própria Chave Pública."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Você usa a Chave PÚBLICA do destinatário para trancar (cifrar). Assim, só ele, com sua Chave PRIVADA, poderá destrancar (decifrar)."
+  },
+  {
+    pergunta: "Assinale a característica que NÃO pertence à Criptografia Simétrica:",
+    alternativas: [
+      "Uso de uma única chave secreta.",
+      "Alto desempenho (muito rápida).",
+      "Uso de um par de chaves matemáticas vinculadas.",
+      "Ideal para cifrar grandes volumes de dados."
+    ],
+    respostaCorreta: 2,
+    explicacao: "O uso de par de chaves (Pública/Privada) é característica da criptografia Assimétrica."
+  },
+
+  // MÓDULO: AUTENTICAÇÃO E FATORES
+  {
+    pergunta: "O que significa a sigla SYK no contexto de autenticação?",
+    alternativas: [
+      "Something You Keep (Algo que você guarda - Token).",
+      "System Yield Key (Chave de rendimento do sistema).",
+      "Something You Know (Algo que você sabe - Senhas).",
+      "Security Yield Knowledge (Conhecimento de segurança)."
+    ],
+    respostaCorreta: 2,
+    explicacao: "SYK (Something You Know) refere-se a senhas, PINs ou perguntas secretas."
+  },
+  {
+    pergunta: "Um usuário acessa o banco usando uma Senha (SYK) e a leitura da sua Impressão Digital (SYA). Isso configura:",
+    alternativas: [
+      "Autenticação de Fator Único.",
+      "Criptografia de Chave Pública.",
+      "MFA (Autenticação Multifator).",
+      "Algoritmo de Lamport."
+    ],
+    respostaCorreta: 2,
+    explicacao: "MFA exige a combinação de 2 ou mais fatores de categorias diferentes (Sabe + É)."
+  },
+  {
+    pergunta: "Um Smartcard ou um Token gerador de códigos no celular se enquadram em qual fator de autenticação?",
+    alternativas: [
+      "SYK (Algo que você sabe)",
+      "SYH (Algo que você tem)",
+      "SYA (Algo que você é)",
+      "MFA (Multifator base)"
+    ],
+    respostaCorreta: 1,
+    explicacao: "SYH (Something You Have) refere-se a objetos físicos ou dispositivos de posse do usuário."
+  },
+
+  // MÓDULO: HASH E SALT
+  {
+    pergunta: "Por que não é recomendado armazenar senhas em 'Texto Claro' no banco de dados?",
+    alternativas: [
+      "Porque o texto claro ocupa muito espaço no disco.",
+      "Porque se o banco de dados for vazado, as senhas estarão legíveis para os atacantes.",
+      "Porque o sistema operacional impede a leitura de texto claro.",
+      "Porque diminui a velocidade de login."
+    ],
+    respostaCorreta: 1,
+    explicacao: "O banco de dados deve armazenar apenas o Hash da senha. Assim, um vazamento não expõe a senha real do usuário."
+  },
+  {
+    pergunta: "Qual é a função do 'Sal' (Salt) na criação do Hash de uma senha?",
+    alternativas: [
+      "Aumentar a velocidade do algoritmo.",
+      "Permitir que o Hash seja revertido caso o usuário esqueça a senha.",
+      "Adicionar dados aleatórios à senha antes do Hash, tornando ineficazes ataques com Rainbow Tables.",
+      "Criptografar a chave pública do usuário."
+    ],
+    respostaCorreta: 2,
+    explicacao: "O Sal garante que dois usuários com a mesma senha ('12345') tenham Hashes completamente diferentes no banco de dados."
+  },
+  {
+    pergunta: "Uma função de Hash ideal possui qual característica essencial?",
+    alternativas: [
+      "Deve ser facilmente reversível (mão dupla).",
+      "É uma função de via única (unidirecional); não é possível descobrir a entrada a partir da saída.",
+      "Requer uma chave pública para ser lida.",
+      "Gera saídas de tamanhos diferentes conforme o tamanho da entrada."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Hashes são funções matemáticas irreversíveis (de mão única) e sempre geram uma saída de tamanho fixo."
+  },
+
+  // MÓDULO: OTP E LAMPORT
+  {
+    pergunta: "O que é uma senha OTP?",
+    alternativas: [
+      "Only Text Password (Senha de texto simples).",
+      "One-Time Password (Senha de uso único e descartável).",
+      "Open Token Protocol (Protocolo de Token Aberto).",
+      "Offline Text Protection (Proteção de texto offline)."
+    ],
+    respostaCorreta: 1,
+    explicacao: "OTP é uma senha dinâmica, válida por um curto período de tempo ou para apenas um único acesso."
+  },
+  {
+    pergunta: "No Algoritmo de Lamport para OTP, qual é a regra fundamental de utilização e validação das senhas geradas?",
+    alternativas: [
+      "A utilização ocorre na mesma ordem da geração dos hashes.",
+      "As senhas não usam hash, usam criptografia RSA.",
+      "A utilização ocorre no sentido INVERSO da geração; o servidor valida aplicando o hash em Sn-1 e comparando com Sn.",
+      "O algoritmo exige o uso do fator biométrico (SYA) obrigatório."
+    ],
+    respostaCorreta: 2,
+    explicacao: "Gera-se uma cadeia H1...H100. A primeira a ser usada é a H100. Depois a H99. O servidor faz Hash(H99) e confere se bate com a H100 que ele guardou no login passado."
+  },
+
+  // MÓDULO: BIOMETRIA
+  {
+    pergunta: "Em sistemas biométricos, qual a diferença entre Autenticação 1:1 e Identificação 1:N?",
+    alternativas: [
+      "1:1 compara a biometria com toda a base de dados; 1:N compara apenas com o template pré-informado.",
+      "1:1 compara sua biometria com um registro específico alegado; 1:N tenta descobrir quem você é buscando na base inteira.",
+      "1:1 usa impressão digital; 1:N usa reconhecimento de íris.",
+      "Ambos são métodos exclusivos de controle de ponto físico."
+    ],
+    respostaCorreta: 1,
+    explicacao: "1:1 é verificação ('Sou o João', checa só contra o João). 1:N é identificação ('Quem é?', checa contra todos)."
+  },
+  {
+    pergunta: "Qual das seguintes biometrias é considerada Comportamental?",
+    alternativas: [
+      "Impressão Digital.",
+      "Geometria da mão.",
+      "Reconhecimento de Íris.",
+      "Dinâmica de digitação no teclado."
+    ],
+    respostaCorreta: 3,
+    explicacao: "Comportamental avalia uma ação (como você digita, sua assinatura, sua marcha/caminhar). Física avalia características do corpo."
+  },
+
+  // MÓDULO: PROTOCOLOS E SIGLAS
+  {
+    pergunta: "Qual é o principal padrão utilizado mundialmente para a infraestrutura de Certificados Digitais?",
+    alternativas: [
+      "PAM",
+      "OAuth",
+      "X.509",
+      "LDAP"
+    ],
+    respostaCorreta: 2,
+    explicacao: "X.509 é o formato padrão utilizado em certificados de chave pública (como os do protocolo HTTPS dos sites web)."
+  },
+  {
+    pergunta: "Em ambientes UNIX/Linux, qual módulo permite a integração flexível de diferentes esquemas de autenticação?",
+    alternativas: [
+      "RADIUS",
+      "PAM (Pluggable Authentication Modules)",
+      "OAuth 2.0",
+      "SAML"
+    ],
+    respostaCorreta: 1,
+    explicacao: "PAM permite que o administrador do Linux adicione biometria, LDAP ou tokens sem precisar reescrever o código do sistema operacional."
+  },
+  {
+    pergunta: "Qual protocolo moderno é amplamente usado na Internet para Delegação de Acesso (ex: 'Fazer login usando sua conta do Google')?",
+    alternativas: [
+      "RADIUS",
+      "LDAP",
+      "X.509",
+      "OAuth (e OpenID)"
+    ],
+    respostaCorreta: 3,
+    explicacao: "OAuth permite que um site acesse suas informações básicas no Google ou Facebook sem que você precise dar sua senha para esse site."
+  },
+  {
+    pergunta: "Qual destes protocolos é focado na autenticação centralizada em redes corporativas internas e provedores de acesso?",
+    alternativas: [
+      "OAuth",
+      "SAML",
+      "RADIUS / LDAP",
+      "Hash MD5"
+    ],
+    respostaCorreta: 2,
+    explicacao: "LDAP e RADIUS são protocolos clássicos para servidores de diretório e autenticação de usuários em redes e Wi-Fi corporativo."
+  },
+  
+  // OUTRAS VARIANTES E FIXAÇÃO DE CONTEÚDO
+  {
+    pergunta: "Por que as tabelas de senhas pré-computadas (Rainbow Tables) são eficientes contra hashes simples, mas falham quando o 'Salt' é utilizado?",
+    alternativas: [
+      "Porque o Salt transforma o Hash em Criptografia Assimétrica.",
+      "O Salt esconde a senha original em um servidor remoto.",
+      "O Salt aumenta a força computacional do atacante.",
+      "Porque o Salt torna cada hash único, obrigando o atacante a recalcular a tabela inteira para cada usuário."
+    ],
+    respostaCorreta: 3,
+    explicacao: "Como o salt é aleatório e único para cada usuário, uma tabela pré-calculada global de hashes de senhas perde totalmente a utilidade."
+  },
+  {
+    pergunta: "O princípio da Confidencialidade na Segurança da Informação é melhor garantido por:",
+    alternativas: [
+      "Hashes (MD5, SHA-1).",
+      "Algoritmos de Criptografia (Simétrica ou Assimétrica).",
+      "Autenticação por biometria 1:N.",
+      "Uso de senhas longas sem MFA."
+    ],
+    respostaCorreta: 1,
+    explicacao: "A criptografia garante que, mesmo que o dado seja interceptado, ele será ilegível, mantendo a confidencialidade."
+  },
+  {
+    pergunta: "Na Cifra de César com deslocamento (salto) de 3 posições, a letra 'A' no texto claro se transforma em qual letra no texto cifrado?",
+    alternativas: [
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    respostaCorreta: 2,
+    explicacao: "A + 3 posições = D (B=1, C=2, D=3). É o exemplo clássico de cifra de substituição."
+  },
+  {
+    pergunta: "O que é texto claro (Plaintext)?",
+    alternativas: [
+      "Texto já processado pelo algoritmo RSA.",
+      "A informação legível antes de sofrer o processo de cifragem.",
+      "Um algoritmo de autenticação de fator duplo.",
+      "O código fonte do programa de segurança."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Plaintext é a sua mensagem original, exatamente do jeito que o ser humano consegue ler."
+  },
+  {
+    pergunta: "Se um atacante descobre a Chave Pública de um usuário em um sistema assimétrico, ele pode:",
+    alternativas: [
+      "Decifrar todas as mensagens antigas que foram enviadas a esse usuário.",
+      "Descobrir a Chave Privada em questão de segundos.",
+      "Enviar uma mensagem confidencial para esse usuário (pois qualquer um pode usar a chave pública).",
+      "Fazer login como o usuário na rede corporativa LDAP."
+    ],
+    respostaCorreta: 2,
+    explicacao: "A chave pública é DE FATO pública! Ela serve para que os outros criptografem mensagens e mandem para você."
+  },
+  {
+    pergunta: "Qual fator biométrico possui menor chance de rejeição falsa, sendo considerado um dos mais precisos, porém invasivo e caro?",
+    alternativas: [
+      "Assinatura escrita.",
+      "Reconhecimento de Voz.",
+      "Impressão digital padrão.",
+      "Leitura de Íris/Retina."
+    ],
+    respostaCorreta: 3,
+    explicacao: "A íris é altamente estável desde a infância e extremamente complexa de forjar, conferindo alta segurança e precisão."
+  },
+  {
+    pergunta: "No contexto OTP (Lamport), se o usuário está prestes a usar a senha número S2, qual senha foi usada imediatamente antes (no acesso anterior)?",
+    alternativas: [
+      "S1",
+      "S3",
+      "S4",
+      "S0"
+    ],
+    respostaCorreta: 1,
+    explicacao: "Cuidado! A ordem de USO é decrescente/inversa. Se ele vai usar a S2 agora, significa que no acesso ANTERIOR ele usou uma 'maior', ou seja, a S3."
+  },
+  {
+    pergunta: "Por que uma biometria isolada NÃO deve ser o único meio de segurança em sistemas críticos?",
+    alternativas: [
+      "Porque biometrias expiram a cada 30 dias.",
+      "Porque caso a biometria seja vazada/roubada, você não pode 'trocar de dedo' como quem troca de senha.",
+      "Porque o X.509 proíbe o uso de biometria.",
+      "Porque biometrias usam criptografia simétrica fraca."
+    ],
+    respostaCorreta: 1,
+    explicacao: "Características físicas são imutáveis. Um vazamento de base biométrica compromete o usuário para a vida toda."
+  },
+  {
+    pergunta: "O Bastão de Licurgo é o exemplo histórico clássico de qual tipo de cifra?",
+    alternativas: [
+      "Transposição.",
+      "Substituição poli-alfabética.",
+      "Criptografia Assimétrica.",
+      "Hash irreversível."
+    ],
+    respostaCorreta: 0,
+    explicacao: "O bastão alterava apenas a posição (coluna/linha) em que as letras do pergaminho eram lidas, sem mudar a letra em si."
+  },
+  {
+    pergunta: "Um certificado X.509 é essencialmente usado para:",
+    alternativas: [
+      "Embaralhar as senhas SYK no Unix.",
+      "Garantir a veracidade da Chave Pública de uma pessoa ou servidor através de uma Autoridade Certificadora.",
+      "Criar redes LDAP locais.",
+      "Fazer o cálculo de senhas do algoritmo de Lamport."
+    ],
+    respostaCorreta: 1,
+    explicacao: "O certificado X.509 atesta que 'A chave pública X pertence de fato ao Banco Y', evitando fraudes."
+  },
+  {
+    pergunta: "Numa situação em que uma clínica recolhe o nome, CPF, telefone e localização aproximada dos pacientes para organização dos serviços, como devem ser tratados estes dados segundo as leis de proteção (como a LGPD)?",
+    alternativas: [
+      "Como dados anónimos sem possibilidade de associação.",
+      "Como dados técnicos sem vínculo pessoal direto.",
+      "Como dados públicos sem exigência de proteção.",
+      "Como dados pessoais de pessoa natural identificável."
+    ],
+    respostaCorreta: 3,
+    explicacao: "Qualquer informação relacionada a uma pessoa natural identificada ou identificável (como nome, CPF e localização) constitui um dado pessoal sujeito a proteção legal e confidencialidade."
+  }
+];
+// FIM DO BANCO DE QUESTÕES
+
+    // Elementos da interface do simulado dinamico.
+    const quizStartScreen = document.getElementById("quizStartScreen");
+    const quizQuestionScreen = document.getElementById("quizQuestionScreen");
+    const quizResultScreen = document.getElementById("quizResultScreen");
+    const startQuizButton = document.getElementById("startQuizButton");
+    const nextQuizButton = document.getElementById("nextQuizButton");
+    const restartQuizButton = document.getElementById("restartQuizButton");
+    const quizProgressEl = document.getElementById("quizProgress");
+    const quizScoreLiveEl = document.getElementById("quizScoreLive");
+    const quizQuestionEl = document.getElementById("quizQuestion");
+    const quizOptionsEl = document.getElementById("quizOptions");
+    const quizExplanationPanel = document.getElementById("quizExplanationPanel");
+    const quizExplanationText = document.getElementById("quizExplanationText");
+    const quizFinalScore = document.getElementById("quizFinalScore");
+    const quizFinalMessage = document.getElementById("quizFinalMessage");
+
+    let questoesDoSimulado = [];
+    let indiceQuestaoAtual = 0;
+    let pontuacaoQuiz = 0;
+    let respostaJaSelecionada = false;
+
+    // Implementacao do algoritmo de Fisher-Yates para embaralhar um array.
+    function embaralharArray(array) {
+      const copia = [...array];
+
+      for (let i = copia.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+      }
+
+      return copia;
+    }
+
+    // Seleciona exatamente 20 questoes para o ciclo atual.
+    function selecionarQuestoesParaOSimulado() {
+      const QUESTOES_POR_CICLO = 20;
+
+      if (bancoDeQuestoes.length === 0) {
+        return [];
+      }
+
+      const selecionadas = [];
+
+      while (selecionadas.length < QUESTOES_POR_CICLO) {
+        const blocoBaralhado = embaralharArray(bancoDeQuestoes);
+
+        for (const questao of blocoBaralhado) {
+          if (selecionadas.length < QUESTOES_POR_CICLO) {
+            selecionadas.push(questao);
+          }
+        }
+      }
+
+      return selecionadas.slice(0, QUESTOES_POR_CICLO);
+    }
+
+    function mostrarEcraQuiz(ecra) {
+      quizStartScreen.classList.add("hidden");
+      quizQuestionScreen.classList.add("hidden");
+      quizResultScreen.classList.add("hidden");
+      ecra.classList.remove("hidden");
+    }
+
+    function atualizarCabecalhoQuiz() {
+      quizProgressEl.textContent = `Questão ${indiceQuestaoAtual + 1} de 20`;
+      quizScoreLiveEl.textContent = `Pontuação: ${pontuacaoQuiz}`;
+    }
+
+    // Renderiza a questao atual e recria os botoes das alternativas.
+    function renderizarQuestaoAtual() {
+      const questaoAtual = questoesDoSimulado[indiceQuestaoAtual];
+      respostaJaSelecionada = false;
+      nextQuizButton.disabled = true;
+      quizExplanationPanel.classList.add("hidden");
+      quizExplanationText.textContent = "";
+      quizOptionsEl.innerHTML = "";
+
+      atualizarCabecalhoQuiz();
+      quizQuestionEl.textContent = questaoAtual.pergunta;
+
+      questaoAtual.alternativas.forEach((alternativa, indice) => {
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "quiz-option";
+        botao.textContent = `${String.fromCharCode(65 + indice)}. ${alternativa}`;
+        botao.addEventListener("click", () => selecionarResposta(indice));
+        quizOptionsEl.appendChild(botao);
+      });
+    }
+
+    // Avalia a resposta clicada, mostra cores e libera o botao de avancar.
+    function selecionarResposta(indiceSelecionado) {
+      if (respostaJaSelecionada) {
+        return;
+      }
+
+      const questaoAtual = questoesDoSimulado[indiceQuestaoAtual];
+      const botoes = [...quizOptionsEl.querySelectorAll(".quiz-option")];
+      const acertou = indiceSelecionado === questaoAtual.respostaCorreta;
+      respostaJaSelecionada = true;
+
+      botoes.forEach((botao, indice) => {
+        botao.disabled = true;
+
+        if (indice === questaoAtual.respostaCorreta) {
+          botao.classList.add("correct");
+        }
+
+        if (indice === indiceSelecionado && !acertou) {
+          botao.classList.add("incorrect");
+        }
+      });
+
+      if (acertou) {
+        pontuacaoQuiz += 1;
+      }
+
+      quizScoreLiveEl.textContent = `Pontuação: ${pontuacaoQuiz}`;
+      quizExplanationText.textContent = questaoAtual.explicacao;
+      quizExplanationPanel.classList.remove("hidden");
+      nextQuizButton.disabled = false;
+    }
+
+    function obterMensagemFinal(acertos, total) {
+      const percentagem = (acertos / total) * 100;
+
+      if (percentagem >= 90) {
+        return "Excelente desempenho. O domínio dos conceitos está muito sólido.";
+      }
+
+      if (percentagem >= 70) {
+        return "Muito bom trabalho. Há consistência, mas ainda vale rever alguns pontos.";
+      }
+
+      if (percentagem >= 50) {
+        return "Resultado razoável. Uma nova ronda de revisão vai ajudar a consolidar a matéria.";
+      }
+
+      return "Vale a pena reforçar a revisão teórica e repetir o simulado para ganhar segurança.";
+    }
+
+    function mostrarResultadoFinal() {
+      quizFinalScore.textContent = `Acertaste ${pontuacaoQuiz}/20`;
+      quizFinalMessage.textContent = obterMensagemFinal(pontuacaoQuiz, 20);
+      mostrarEcraQuiz(quizResultScreen);
+    }
+
+    function avancarQuestao() {
+      indiceQuestaoAtual += 1;
+
+      if (indiceQuestaoAtual >= questoesDoSimulado.length) {
+        mostrarResultadoFinal();
+        return;
+      }
+
+      renderizarQuestaoAtual();
+    }
+
+    function iniciarSimulado() {
+      questoesDoSimulado = selecionarQuestoesParaOSimulado();
+      indiceQuestaoAtual = 0;
+      pontuacaoQuiz = 0;
+      respostaJaSelecionada = false;
+
+      if (questoesDoSimulado.length === 0) {
+        quizFinalScore.textContent = "Sem questões disponíveis";
+        quizFinalMessage.textContent = "Adiciona objetos ao array bancoDeQuestoes para utilizar o Simulado Dinâmico.";
+        mostrarEcraQuiz(quizResultScreen);
+        return;
+      }
+
+      mostrarEcraQuiz(quizQuestionScreen);
+      renderizarQuestaoAtual();
+    }
+
+    // Base de flashcards cobrindo os temas criticos do prompt.
+    const flashcards = [
+      {
+        topic: "Criptografia",
+        question: "Quais são os quatro elementos básicos de um processo de criptografia?",
+        answer: "Texto claro, texto cifrado, algoritmo e chave."
+      },
+      {
+        topic: "Criptografia Clássica",
+        question: "Qual é a diferença entre cifra de transposição e cifra de substituição?",
+        answer: "Na transposição, os caracteres mantêm sua identidade e mudam de posição; na substituição, os caracteres são trocados por outros símbolos."
+      },
+      {
+        topic: "Simétrica x Assimétrica",
+        question: "Qual é o problema central da criptografia simétrica?",
+        answer: "O problema central é a distribuição segura da única chave usada para cifrar e decifrar."
+      },
+      {
+        topic: "Simétrica x Assimétrica",
+        question: "Como a criptografia assimétrica resolve a distribuição de chaves?",
+        answer: "Ela usa um par de chaves pública e privada, eliminando a necessidade de distribuir uma chave secreta compartilhada."
+      },
+      {
+        topic: "Autenticação",
+        question: "O que significam SYK, SYH e SYA?",
+        answer: "SYK: algo que o usuário sabe, como senha; SYH: algo que o usuário tem, como token; SYA: algo que o usuário é, como biometria."
+      },
+      {
+        topic: "Hash e Salt",
+        question: "Qual é o papel do Salt contra Rainbow Tables?",
+        answer: "O salt adiciona um valor aleatório antes do hash para evitar hashes iguais para senhas iguais e dificultar ataques com Rainbow Tables."
+      },
+      {
+        topic: "Lamport",
+        question: "Qual é a lógica de validação do Algoritmo de Lamport (OTP)?",
+        answer: "A utilização ocorre no sentido inverso da geração: valida-se aplicando hash em Sn-1 para comparar com Sn."
+      },
+      {
+        topic: "Certificados",
+        question: "O que é o padrão X.509?",
+        answer: "É o padrão para Certificados Digitais."
+      },
+      {
+        topic: "Biometria",
+        question: "Qual é a diferença entre biometria 1:1 e 1:N?",
+        answer: "Biometria 1:1 é verificação contra um único registro; biometria 1:N é identificação comparando com toda a base."
+      },
+      {
+        topic: "Protocolos",
+        question: "Em que contexto aparecem OAuth e SAML?",
+        answer: "Aparecem em Web/Internet como padrões de autorização e federação de identidade."
+      }
+    ];
+
+    const flashcardEl = document.getElementById("flashcard");
+    const flashQuestionEl = document.getElementById("flashQuestion");
+    const flashAnswerEl = document.getElementById("flashAnswer");
+    const flashCounterEl = document.getElementById("flashCounter");
+    const flashTopicEl = document.getElementById("flashTopic");
+    const progressLabelEl = document.getElementById("progressLabel");
+    const progressFillEl = document.getElementById("progressFill");
+    const flipButton = document.getElementById("flipButton");
+    const nextButton = document.getElementById("nextButton");
+    const prevButton = document.getElementById("prevButton");
+
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    // Atualiza o conteudo do cartao e a barra de progresso.
+    function renderFlashcard() {
+      const card = flashcards[currentIndex];
+      const total = flashcards.length;
+      const progress = ((currentIndex + 1) / total) * 100;
+
+      flashQuestionEl.textContent = card.question;
+      flashAnswerEl.textContent = card.answer;
+      flashTopicEl.textContent = card.topic;
+      flashCounterEl.textContent = `${currentIndex + 1} / ${total}`;
+      progressLabelEl.textContent = `Progresso: ${currentIndex + 1} de ${total} cartões`;
+      progressFillEl.style.width = `${progress}%`;
+    }
+
+    // Faz o flip visual do cartao.
+    function toggleFlip() {
+      isFlipped = !isFlipped;
+      flashcardEl.classList.toggle("is-flipped", isFlipped);
+      flipButton.textContent = isFlipped ? "Ver Pergunta" : "Virar Cartão";
+    }
+
+    // Navega entre os cartoes, sempre resetando para o lado da pergunta.
+    function goToCard(direction) {
+      currentIndex = (currentIndex + direction + flashcards.length) % flashcards.length;
+      isFlipped = false;
+      flashcardEl.classList.remove("is-flipped");
+      flipButton.textContent = "Virar Cartão";
+      renderFlashcard();
+    }
+
+    startQuizButton.addEventListener("click", iniciarSimulado);
+    nextQuizButton.addEventListener("click", avancarQuestao);
+    restartQuizButton.addEventListener("click", iniciarSimulado);
+
+    flipButton.addEventListener("click", toggleFlip);
+    nextButton.addEventListener("click", () => goToCard(1));
+    prevButton.addEventListener("click", () => goToCard(-1));
+
+    renderFlashcard();
+  </script>
+</body>
+</html>
