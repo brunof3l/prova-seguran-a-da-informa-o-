@@ -1,16 +1,15 @@
-# Hub Interativo de Revisao de Seguranca da Informacao
+# Hub Interativo de Revisao por Materias
 
-Single Page Application em HTML, CSS e JavaScript puro para revisao de conteudos de Seguranca da Informacao com foco em estudo, memorizacao e simulacao.
+Projeto estatico em HTML, CSS e JavaScript puro que organiza materiais de estudo em paginas separadas por disciplina, com uma home central para escolher qual conteudo revisar.
 
 ## Visao Geral
 
-O projeto foi construido como um hub de estudos em modo noturno, com layout responsivo e abordagem visual voltada para EdTech. A aplicacao reune:
+O projeto foi construido como um hub de estudos em modo noturno, com layout responsivo e abordagem visual voltada para EdTech. Atualmente, a aplicacao reune:
 
-- Modulo 1: Criptografia
-- Modulo 2: Autenticacao
-- Conceitos avancados com foco em Lamport, X.509, PAM, LDAP, RADIUS, OAuth e SAML
-- Flashcards interativos com animacao de flip
-- Simulado dinamico com correcao imediata e painel de explicacao
+- Home com menu para escolha de materias
+- Pagina de Seguranca da Informacao
+- Pagina de Estruturas de Dados e POO com Python
+- Dois espacos reservados para materias futuras
 
 ## Tecnologias
 
@@ -20,27 +19,33 @@ O projeto foi construido como um hub de estudos em modo noturno, com layout resp
 
 ## Estrutura
 
-- `index.html`: aplicacao completa em arquivo unico, com estilos e scripts embutidos
+- `index.html`: menu principal para selecao de materias
+- `poo-python.html`: trilha de Estruturas de Dados e POO com Python
+- `seguranca-informacao.html`: trilha de Seguranca da Informacao
 - `README.md`: documentacao principal do projeto
 
 ## Funcionalidades
 
-- Interface dark mode moderna com detalhes visuais inspirados em ciberseguranca
-- Navegacao por secoes com menu fixo
-- Cards teoricos e visuais para revisao rapida
-- Acordeoes "Visao do Professor" com resposta tecnica de prova
-- Flashcards de memorizacao
-- Simulado dinamico com:
+- Home de navegacao entre materias prontas e futuras
+- Interface dark mode moderna em todas as paginas
+- Pagina de POO com:
+  - modulos de estruturas de dados, introducao a POO e pilares avancados
+  - acordeoes "Visao do Professor"
+  - flashcards de memorizacao
+  - simulado dinamico com:
   - 20 perguntas por ciclo
   - embaralhamento com Fisher-Yates
   - correcao imediata
   - explicacao apos resposta
   - tela final com pontuacao
   - botao para refazer o simulado
+- classificacao das questoes por tema e nivel
+- resumo final por tema e distribuicao por nivel no resultado do simulado
+- Pagina de Seguranca da Informacao com cards, comparativos, acordeoes e flashcards
 
 ## Como Executar
 
-Como o projeto e estatico, basta abrir o arquivo `index.html` no navegador.
+Como o projeto e estatico, basta abrir o arquivo `index.html` no navegador e escolher a materia desejada.
 
 Opcionalmente, pode publicar em qualquer hospedagem estatica, como:
 
@@ -50,7 +55,7 @@ Opcionalmente, pode publicar em qualquer hospedagem estatica, como:
 
 ## Banco de Questoes
 
-O simulado dinamico possui uma variavel chamada `bancoDeQuestoes` no proprio `index.html`.
+O simulado dinamico atualmente esta na pagina `poo-python.html`.
 
 Ela usa objetos com a seguinte estrutura:
 
@@ -78,4 +83,4 @@ Use esse ponto para expandir o array com novas perguntas.
 
 ## Objetivo
 
-Servir como material de apoio para estudo, revisao de prova e treino rapido de conceitos essenciais de Seguranca da Informacao.
+Servir como base para um hub expansivel de revisao, permitindo estudar diferentes materias em paginas separadas, mantendo consistencia visual e espaco para crescimento futuro.

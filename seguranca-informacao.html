@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Interativo de Revisão de Segurança da Informação</title>
+  <style>
+    :root {
+      --bg: #07101d;
+      --panel: rgba(9, 18, 34, 0.9);
+      --panel-2: rgba(13, 24, 44, 0.92);
+      --line: rgba(148, 163, 184, 0.16);
+      --text: #ebf1fb;
+      --muted: #acbad0;
+      --green: #22c55e;
+      --purple: #8b5cf6;
+      --cyan: #38bdf8;
+      --warning: #f59e0b;
+      --shadow: 0 24px 60px rgba(2, 8, 18, 0.45);
+      --r-lg: 24px;
+      --r-md: 16px;
+      --container: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      min-height: 100vh;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at top left, rgba(139, 92, 246, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), transparent 24%),
+        linear-gradient(180deg, #030817 0%, #07101d 50%, #091427 100%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code, pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    .container {
+      width: min(var(--container), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: rgba(3, 8, 23, 0.8);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.24), rgba(34, 197, 94, 0.18));
+      border: 1px solid rgba(139, 92, 246, 0.26);
+      box-shadow: 0 0 28px rgba(139, 92, 246, 0.16);
+    }
+
+    .brand-text h1 {
+      font-size: 1rem;
+      line-height: 1.1;
+    }
+
+    .brand-text span,
+    .section-header p,
+    .card p,
+    .text-block p,
+    .text-block li,
+    .flashface p,
+    .flash-sidebar li,
+    td {
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .nav-links a,
+    .btn {
+      transition: 0.2s ease;
+    }
+
+    .nav-links a {
+      padding: 0.72rem 1rem;
+      border-radius: 999px;
+      background: rgba(13, 24, 44, 0.84);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible,
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    main {
+      padding: 2rem 0 4rem;
+    }
+
+    .hero-card,
+    .content-panel,
+    .flash-sidebar {
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.5rem;
+      padding: 2rem;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(9, 18, 34, 0.96), rgba(13, 24, 44, 0.92));
+    }
+
+    .eyebrow,
+    .section-header .tag,
+    .flash-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .eyebrow {
+      margin-bottom: 1rem;
+      padding: 0.45rem 0.75rem;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.22);
+      color: #c5f7d6;
+      font-size: 0.9rem;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.05;
+      max-width: 12ch;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 64ch;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-actions,
+    .flash-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 999px;
+      padding: 0.92rem 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--purple), #6d28d9);
+      box-shadow: 0 14px 30px rgba(139, 92, 246, 0.24);
+    }
+
+    .btn.secondary {
+      background: rgba(13, 24, 44, 0.88);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .hero-stats {
+      display: grid;
+      gap: 1rem;
+      align-content: center;
+    }
+
+    .stat-card {
+      padding: 1rem 1.1rem;
+      border-radius: var(--r-md);
+      border: 1px solid var(--line);
+      background: rgba(3, 8, 23, 0.45);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.4rem;
+      color: #d9fbe4;
+    }
+
+    .section {
+      padding: 1.6rem 0;
+      scroll-margin-top: 96px;
+    }
+
+    .section-header {
+      margin-bottom: 1.25rem;
+    }
+
+    .section-header .tag {
+      margin-bottom: 0.7rem;
+      padding: 0.35rem 0.7rem;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      background: rgba(56, 189, 248, 0.08);
+      color: #cdeefe;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section-header h3 {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .content-panel {
+      padding: 1.35rem;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(9, 18, 34, 0.94), rgba(9, 18, 34, 0.84));
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .cards-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .cards-2,
+    .flashcards-panel {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card,
+    .text-block,
+    .compare-card {
+      border-radius: var(--r-lg);
+      border: 1px solid var(--line);
+      background: rgba(3, 8, 23, 0.42);
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 1.15rem;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      margin-bottom: 0.85rem;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(34, 197, 94, 0.18));
+      border: 1px solid rgba(139, 92, 246, 0.24);
+    }
+
+    .card h4,
+    .text-block h4,
+    .flash-sidebar h4 {
+      margin-bottom: 0.7rem;
+      font-size: 1.1rem;
+    }
+
+    .text-block {
+      margin-top: 1rem;
+      padding: 1.15rem;
+    }
+
+    .text-block ul,
+    .flash-sidebar ul {
+      padding-left: 1.2rem;
+    }
+
+    .text-block strong,
+    .compare-card strong,
+    .callout strong {
+      color: #f8fbff;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .compare-card {
+      position: relative;
+      overflow: hidden;
+      padding: 1.2rem;
+    }
+
+    .compare-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30px -30px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      opacity: 0.16;
+      filter: blur(6px);
+    }
+
+    .compare-card.sym::after {
+      background: var(--green);
+    }
+
+    .compare-card.asym::after {
+      background: var(--purple);
+    }
+
+    .compare-title {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .compare-badge {
+      min-width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-weight: 800;
+      color: #08111f;
+    }
+
+    .compare-card.sym .compare-badge {
+      background: linear-gradient(135deg, #4ade80, #bbf7d0);
+    }
+
+    .compare-card.asym .compare-badge {
+      background: linear-gradient(135deg, #a78bfa, #ddd6fe);
+    }
+
+    .accordion {
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      background: rgba(3, 8, 23, 0.48);
+      overflow: hidden;
+    }
+
+    .accordion summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      font-weight: 700;
+    }
+
+    .accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .accordion summary span:last-child {
+      color: var(--green);
+      transition: transform 0.2s ease;
+    }
+
+    .accordion[open] summary span:last-child {
+      transform: rotate(45deg);
+    }
+
+    .accordion-body {
+      padding: 0 1.1rem 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.08);
+      display: grid;
+      gap: 0.8rem;
+      color: var(--muted);
+    }
+
+    .qa-card {
+      padding: 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.14);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .answer {
+      margin-top: 0.5rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .callout {
+      margin-top: 1rem;
+      padding: 1rem 1.1rem;
+      border-left: 4px solid var(--warning);
+      border-radius: 0 var(--r-md) var(--r-md) 0;
+      background: rgba(245, 158, 11, 0.08);
+      color: #fde68a;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+      background: rgba(3, 8, 23, 0.28);
+    }
+
+    th, td {
+      padding: 0.95rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    }
+
+    th {
+      color: var(--text);
+      background: rgba(13, 24, 44, 0.95);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .flashcard-stage {
+      perspective: 1200px;
+    }
+
+    .flashcard {
+      position: relative;
+      min-height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease;
+    }
+
+    .flashcard.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashface {
+      position: absolute;
+      inset: 0;
+      padding: 1.5rem;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(9, 18, 34, 0.96), rgba(3, 8, 23, 0.92));
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backface-visibility: hidden;
+    }
+
+    .flashface.back {
+      transform: rotateY(180deg);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .flash-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .flash-pill {
+      padding: 0.35rem 0.7rem;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.24);
+      color: #e6ddff;
+    }
+
+    .flashface h4 {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.25;
+      margin: 1.2rem 0;
+    }
+
+    .flash-sidebar {
+      padding: 1.2rem;
+      border-radius: 24px;
+      background: rgba(3, 8, 23, 0.42);
+    }
+
+    .progress {
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.16);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--purple), var(--green));
+      transition: width 0.35s ease;
+    }
+
+    .helper-note {
+      margin-top: 0.8rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    footer {
+      padding: 1rem 0 2.5rem;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .hero-card,
+      .cards-4,
+      .cards-2,
+      .compare,
+      .flashcards-panel {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .hero-card,
+      .cards-4,
+      .cards-2,
+      .compare,
+      .flashcards-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-inner {
+        display: grid;
+        align-items: start;
+      }
+
+      .nav-links {
+        width: 100%;
+      }
+
+      .nav-links a {
+        flex: 1 1 150px;
+        text-align: center;
+      }
+
+      .hero-card,
+      .content-panel,
+      .flash-sidebar {
+        padding: 1rem;
+      }
+
+      .flashcard {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🛡️</div>
+        <div class="brand-text">
+          <h1>Hub Interativo de Revisão</h1>
+          <span>Segurança da Informação</span>
+        </div>
+      </div>
+      <nav class="nav-links" aria-label="Navegação principal">
+        <a href="index.html">Voltar ao Menu</a>
+        <a href="#criptografia">Criptografia</a>
+        <a href="#autenticacao">Autenticação</a>
+        <a href="#flashcards">Flashcards</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-card">
+          <div>
+            <span class="eyebrow">EdTech + Revisão Guiada</span>
+            <h2>Segurança da Informação para revisar e acertar na prova.</h2>
+            <p>
+              Esta página organiza os conceitos mais cobrados de criptografia e autenticação em uma
+              experiência visual, com explicações curtas, comparativos e blocos de resposta técnica.
+            </p>
+            <div class="hero-actions">
+              <a class="btn primary" href="#criptografia">Começar por Criptografia</a>
+              <a class="btn secondary" href="#flashcards">Ir para Flashcards</a>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card">
+              <strong>2 módulos centrais</strong>
+              <span>Criptografia e autenticação com foco nos fundamentos de prova.</span>
+            </div>
+            <div class="stat-card">
+              <strong>Visão do Professor</strong>
+              <span>Perguntas típicas com respostas técnicas curtas e objetivas.</span>
+            </div>
+            <div class="stat-card">
+              <strong>Revisão ativa</strong>
+              <span>Flashcards para fixar termos e diferenças essenciais.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="criptografia" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Módulo 1</span>
+          <h3>Criptografia</h3>
+          <p>O primeiro módulo apresenta os elementos do processo criptográfico, cifras clássicas e o contraste entre chave única e par de chaves.</p>
+        </div>
+        <div class="content-panel">
+          <div class="grid cards-4">
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">📝</div>
+              <h4>Texto Claro</h4>
+              <p>É a mensagem original, legível e compreensível antes de qualquer processo de cifragem.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🔒</div>
+              <h4>Texto Cifrado</h4>
+              <p>É o resultado da aplicação da criptografia, tornando a mensagem ilegível sem a chave adequada.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">⚙️</div>
+              <h4>Algoritmo</h4>
+              <p>É o conjunto de regras matemáticas e lógicas usado para transformar texto claro em texto cifrado.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🗝️</div>
+              <h4>Chave</h4>
+              <p>É o parâmetro que controla a operação de cifragem e decifragem dentro do algoritmo.</p>
+            </article>
+          </div>
+
+          <div class="text-block">
+            <h4>Transposição x Substituição</h4>
+            <p>Na <strong>transposição</strong>, os caracteres mantêm sua identidade e apenas mudam de posição. O exemplo clássico citado é <strong>Licurgo</strong>.</p>
+            <p>Na <strong>substituição</strong>, cada símbolo é trocado por outro símbolo. Os exemplos clássicos citados são <strong>César</strong> e <strong>Enigma</strong>.</p>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <div class="qa-card">
+                <p><strong>Pergunta:</strong> Qual a diferença entre cifra de transposição e cifra de substituição?</p>
+                <div class="answer">
+                  <p><strong>Resposta:</strong> Na transposição, os caracteres não são trocados, apenas reorganizados. Na substituição, os caracteres são trocados por outros símbolos.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="compare" aria-label="Comparativo entre criptografia simétrica e assimétrica">
+            <article class="compare-card sym">
+              <div class="compare-title">
+                <div class="compare-badge">S</div>
+                <div>
+                  <h4>Criptografia Simétrica</h4>
+                  <p>Mesma chave para cifrar e decifrar.</p>
+                </div>
+              </div>
+              <ul>
+                <li><strong>Rápida</strong> para processamento.</li>
+                <li>Usa <strong>1 chave</strong>.</li>
+                <li>Tem <strong>problema de distribuição</strong> da chave.</li>
+              </ul>
+            </article>
+            <article class="compare-card asym">
+              <div class="compare-title">
+                <div class="compare-badge">A</div>
+                <div>
+                  <h4>Criptografia Assimétrica</h4>
+                  <p>Par de chaves para operações complementares.</p>
+                </div>
+              </div>
+              <ul>
+                <li>Exemplo clássico: <strong>RSA</strong>.</li>
+                <li>Usa <strong>par de chaves Pública/Privada</strong>.</li>
+                <li><strong>Resolve a distribuição</strong> da chave secreta.</li>
+              </ul>
+            </article>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <div class="qa-card">
+                <p><strong>Pergunta:</strong> Compare criptografia simétrica e assimétrica com foco na distribuição de chaves.</p>
+                <div class="answer">
+                  <p><strong>Resposta:</strong> A simétrica usa uma única chave e sofre com a distribuição segura dessa chave. A assimétrica usa chaves pública e privada, resolvendo esse problema.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="autenticacao" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Módulo 2</span>
+          <h3>Autenticação e Conceitos Avançados</h3>
+          <p>O segundo módulo cobre fatores de autenticação, hash, salt, Lamport e padrões comuns em redes e web.</p>
+        </div>
+        <div class="content-panel">
+          <div class="grid cards-4">
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🧠</div>
+              <h4>SYK</h4>
+              <p><strong>Sabe:</strong> algo que o usuário conhece, como senha.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">📲</div>
+              <h4>SYH</h4>
+              <p><strong>Tem:</strong> algo que o usuário possui, como token.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">🧬</div>
+              <h4>SYA</h4>
+              <p><strong>É:</strong> algo que o usuário é, como biometria.</p>
+            </article>
+            <article class="card">
+              <div class="card-icon" aria-hidden="true">➕</div>
+              <h4>MFA</h4>
+              <p>É a combinação de dois ou mais fatores distintos de autenticação.</p>
+            </article>
+          </div>
+
+          <div class="text-block">
+            <h4>Hash e Salt</h4>
+            <p><strong>Hash</strong> pode ser entendido como um triturador sem volta: transforma uma entrada em uma saída resumida sem processo prático de reversão.</p>
+            <p>O <strong>Salt</strong> é um valor adicional inserido antes do cálculo do hash para que senhas iguais não gerem hashes iguais, dificultando ataques com <strong>Rainbow Tables</strong>.</p>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <div class="qa-card">
+                <p><strong>Pergunta:</strong> Qual o papel do Salt no armazenamento seguro de senhas?</p>
+                <div class="answer">
+                  <p><strong>Resposta:</strong> O salt é um valor aleatório adicionado antes do hash para impedir hashes iguais para senhas iguais e mitigar Rainbow Tables.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="text-block">
+            <h4>Algoritmo de Lamport (OTP)</h4>
+            <p>O algoritmo usa uma cadeia de valores derivados por hash para autenticação de uso único, descartando senhas já utilizadas.</p>
+            <div class="callout">
+              <strong>A utilização é no sentido INVERSO da geração (Valida aplicando Hash em Sn-1 para comparar com Sn).</strong>
+            </div>
+          </div>
+
+          <details class="accordion">
+            <summary>
+              <span>Visão do Professor: Como isso cai na prova?</span>
+              <span aria-hidden="true">+</span>
+            </summary>
+            <div class="accordion-body">
+              <div class="qa-card">
+                <p><strong>Pergunta:</strong> Explique a lógica de validação do algoritmo de Lamport.</p>
+                <div class="answer">
+                  <p><strong>Resposta:</strong> A validação ocorre aplicando hash em Sn-1 para comparar com Sn previamente armazenado, usando a cadeia no sentido inverso da geração.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="text-block">
+            <h4>Siglas Importantes</h4>
+            <div class="table-wrap">
+              <table aria-label="Tabela de siglas importantes">
+                <thead>
+                  <tr>
+                    <th>Sigla</th>
+                    <th>Significado</th>
+                    <th>Área</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>X.509</td>
+                    <td>Certificado Digital</td>
+                    <td>Identidade digital</td>
+                  </tr>
+                  <tr>
+                    <td>PAM</td>
+                    <td>Pluggable Authentication Modules</td>
+                    <td>Unix</td>
+                  </tr>
+                  <tr>
+                    <td>LDAP / RADIUS</td>
+                    <td>Serviços de autenticação centralizada</td>
+                    <td>Redes</td>
+                  </tr>
+                  <tr>
+                    <td>OAuth / SAML</td>
+                    <td>Autorização e federação de identidade</td>
+                    <td>Web / Internet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="text-block">
+            <h4>Biometria 1:1 x 1:N</h4>
+            <p><strong>1:1</strong> representa verificação, comparando a amostra com um único registro informado.</p>
+            <p><strong>1:N</strong> representa identificação, comparando a amostra com toda a base para descobrir quem é o usuário.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flashcards" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Memorização</span>
+          <h3>Flashcards de Segurança da Informação</h3>
+          <p>Treine conceitos essenciais de criptografia e autenticação com perguntas rápidas e respostas técnicas.</p>
+        </div>
+        <div class="grid flashcards-panel">
+          <div class="flashcard-stage">
+            <div class="flashcard" id="flashcard" aria-live="polite">
+              <article class="flashface front">
+                <div class="flash-meta">
+                  <span class="flash-pill">Pergunta</span>
+                  <span id="flashCounter">1 / 8</span>
+                </div>
+                <div>
+                  <h4 id="flashQuestion">O que é texto claro?</h4>
+                  <p>Responda mentalmente e depois vire o cartão para conferir.</p>
+                </div>
+                <p class="helper-note">Dica: pense na formulação curta que você usaria em uma prova.</p>
+              </article>
+              <article class="flashface back">
+                <div class="flash-meta">
+                  <span class="flash-pill">Resposta</span>
+                  <span id="flashTopic">Criptografia</span>
+                </div>
+                <div>
+                  <h4 id="flashAnswer">É a mensagem original antes de ser cifrada.</h4>
+                  <p>Use essa resposta como referência de linguagem técnica objetiva.</p>
+                </div>
+                <p class="helper-note">Compare sua resposta com a formulação ideal e refine a precisão.</p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="flash-sidebar">
+            <h4>Como usar</h4>
+            <ul>
+              <li>Leia a pergunta e tente responder sem olhar o verso.</li>
+              <li>Vire o cartão para validar a resposta.</li>
+              <li>Avance pelos temas centrais de segurança.</li>
+            </ul>
+            <div class="progress">
+              <p id="progressLabel">Progresso: 1 de 8 cartões</p>
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+            <div class="flash-controls">
+              <button class="btn primary" id="flipButton" type="button">Virar Cartão</button>
+              <button class="btn secondary" id="nextButton" type="button">Próximo</button>
+              <button class="btn secondary" id="prevButton" type="button">Anterior</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Hub Interativo de Revisão de Segurança da Informação • pronto para estudo, revisão e memorização.
+    </div>
+  </footer>
+
+  <script>
+    const flashcards = [
+      { topic: "Criptografia", question: "O que é texto claro?", answer: "É a mensagem original antes de ser cifrada." },
+      { topic: "Criptografia", question: "O que é texto cifrado?", answer: "É a mensagem resultante da aplicação da criptografia." },
+      { topic: "Criptografia", question: "Qual a diferença entre transposição e substituição?", answer: "Na transposição os caracteres mudam de posição; na substituição os caracteres são trocados por outros símbolos." },
+      { topic: "Criptografia", question: "Qual o problema central da criptografia simétrica?", answer: "O problema da distribuição segura da única chave compartilhada." },
+      { topic: "Autenticação", question: "O que significa MFA?", answer: "Autenticação multifator, combinação de dois ou mais fatores distintos." },
+      { topic: "Autenticação", question: "Qual o papel do Salt?", answer: "Impedir hashes iguais para senhas iguais e dificultar Rainbow Tables." },
+      { topic: "Lamport", question: "Qual a lógica de validação do algoritmo de Lamport?", answer: "Aplica-se hash em Sn-1 para comparar com Sn, usando a cadeia no sentido inverso." },
+      { topic: "Identidade", question: "O que é X.509?", answer: "Padrão associado a certificados digitais." }
+    ];
+
+    const flashcardEl = document.getElementById("flashcard");
+    const flashQuestionEl = document.getElementById("flashQuestion");
+    const flashAnswerEl = document.getElementById("flashAnswer");
+    const flashCounterEl = document.getElementById("flashCounter");
+    const flashTopicEl = document.getElementById("flashTopic");
+    const progressLabelEl = document.getElementById("progressLabel");
+    const progressFillEl = document.getElementById("progressFill");
+    const flipButton = document.getElementById("flipButton");
+    const nextButton = document.getElementById("nextButton");
+    const prevButton = document.getElementById("prevButton");
+
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    function renderFlashcard() {
+      const card = flashcards[currentIndex];
+      const total = flashcards.length;
+      const progress = ((currentIndex + 1) / total) * 100;
+
+      flashQuestionEl.textContent = card.question;
+      flashAnswerEl.textContent = card.answer;
+      flashTopicEl.textContent = card.topic;
+      flashCounterEl.textContent = `${currentIndex + 1} / ${total}`;
+      progressLabelEl.textContent = `Progresso: ${currentIndex + 1} de ${total} cartões`;
+      progressFillEl.style.width = `${progress}%`;
+    }
+
+    function toggleFlip() {
+      isFlipped = !isFlipped;
+      flashcardEl.classList.toggle("is-flipped", isFlipped);
+      flipButton.textContent = isFlipped ? "Ver Pergunta" : "Virar Cartão";
+    }
+
+    function goToCard(direction) {
+      currentIndex = (currentIndex + direction + flashcards.length) % flashcards.length;
+      isFlipped = false;
+      flashcardEl.classList.remove("is-flipped");
+      flipButton.textContent = "Virar Cartão";
+      renderFlashcard();
+    }
+
+    flipButton.addEventListener("click", toggleFlip);
+    nextButton.addEventListener("click", () => goToCard(1));
+    prevButton.addEventListener("click", () => goToCard(-1));
+
+    renderFlashcard();
+  </script>
+</body>
+</html>
