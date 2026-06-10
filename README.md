@@ -9,7 +9,8 @@ O projeto foi construido como um hub de estudos em modo noturno, com layout resp
 - Home com menu para escolha de materias
 - Pagina de Seguranca da Informacao
 - Pagina de Estruturas de Dados e POO com Python
-- Dois espacos reservados para materias futuras
+- Pagina de Redes de Computadores I com foco em subnetting IPv4
+- Um espaco reservado para materia futura
 
 ## Tecnologias
 
@@ -22,6 +23,7 @@ O projeto foi construido como um hub de estudos em modo noturno, com layout resp
 - `index.html`: menu principal para selecao de materias
 - `poo-python.html`: trilha de Estruturas de Dados e POO com Python
 - `seguranca-informacao.html`: trilha de Seguranca da Informacao
+- `redes-subnetting.html`: trilha de Redes de Computadores I com foco em IPv4 e subnetting
 - `README.md`: documentacao principal do projeto
 
 ## Funcionalidades
@@ -42,6 +44,11 @@ O projeto foi construido como um hub de estudos em modo noturno, com layout resp
 - classificacao das questoes por tema e nivel
 - resumo final por tema e distribuicao por nivel no resultado do simulado
 - Pagina de Seguranca da Informacao com cards, comparativos, acordeoes e flashcards
+- Pagina de Redes com:
+  - fundamentos de IPv4 e classes privadas
+  - tutorial visual dos 4 passos do subnetting
+  - tabela pratica para rede, primeiro IP util, ultimo IP util e broadcast
+  - simulado dinamico pronto para receber banco de questoes
 
 ## Como Executar
 
