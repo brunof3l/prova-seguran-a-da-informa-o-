@@ -162,7 +162,8 @@
     .hero-card,
     .content-panel,
     .quiz-main,
-    .quiz-side {
+    .quiz-side,
+    .flash-sidebar {
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
     }
@@ -298,7 +299,8 @@
     .cards-2,
     .steps-grid,
     .quiz-shell,
-    .summary-grid {
+    .summary-grid,
+    .flashcards-panel {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -340,7 +342,8 @@
     .card h4,
     .text-block h4,
     .step-card h4,
-    .quiz-side h4 {
+    .quiz-side h4,
+    .flash-sidebar h4 {
       margin-bottom: 0.7rem;
       font-size: 1.1rem;
     }
@@ -586,6 +589,109 @@
       margin: 0.35rem 0 0.55rem;
     }
 
+    .flashcard-stage {
+      perspective: 1200px;
+    }
+
+    .flashcard {
+      position: relative;
+      min-height: 320px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease;
+    }
+
+    .flashcard.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashface {
+      position: absolute;
+      inset: 0;
+      padding: 1.5rem;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(8, 20, 30, 0.96), rgba(2, 8, 20, 0.92));
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backface-visibility: hidden;
+    }
+
+    .flashface.back {
+      transform: rotateY(180deg);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .flash-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .flash-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-weight: 600;
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.24);
+      color: #cffafe;
+    }
+
+    .flashface h4 {
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.25;
+      margin: 1.2rem 0;
+    }
+
+    .flash-sidebar {
+      padding: 1.2rem;
+      border-radius: 24px;
+      background: rgba(2, 8, 20, 0.42);
+    }
+
+    .flash-sidebar ul {
+      padding-left: 1.2rem;
+    }
+
+    .flash-sidebar li,
+    .flashface p,
+    .helper-note,
+    .progress p {
+      color: var(--muted);
+    }
+
+    .progress {
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.16);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      transition: width 0.35s ease;
+    }
+
+    .flash-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
     footer {
       padding: 1rem 0 2.5rem;
       text-align: center;
@@ -598,7 +704,8 @@
       .cards-2,
       .steps-grid,
       .quiz-shell,
-      .summary-grid {
+      .summary-grid,
+      .flashcards-panel {
         grid-template-columns: 1fr 1fr;
       }
     }
@@ -610,7 +717,8 @@
       .cards-2,
       .steps-grid,
       .quiz-shell,
-      .summary-grid {
+      .summary-grid,
+      .flashcards-panel {
         grid-template-columns: 1fr;
       }
 
@@ -631,7 +739,8 @@
       .hero-card,
       .content-panel,
       .quiz-main,
-      .quiz-side {
+      .quiz-side,
+      .flash-sidebar {
         padding: 1rem;
       }
     }
@@ -653,6 +762,7 @@
         <a href="#subnetting">Módulo 2</a>
         <a href="#tabela-ips">Módulo 3</a>
         <a href="#simulado-dinamico">Simulado</a>
+        <a href="#flashcards">Flashcards</a>
       </nav>
     </div>
   </header>
@@ -998,6 +1108,64 @@
         </div>
       </div>
     </section>
+
+    <section id="flashcards" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="tag">Memorização</span>
+          <h3>Flashcards de Redes</h3>
+          <p>Revise os conceitos centrais de IPv4 e subnetting com cartões de pergunta e resposta no mesmo estilo das outras matérias.</p>
+        </div>
+        <div class="grid flashcards-panel">
+          <div class="flashcard-stage">
+            <div class="flashcard" id="flashcard" aria-live="polite">
+              <article class="flashface front">
+                <div class="flash-meta">
+                  <span class="flash-pill">Pergunta</span>
+                  <span id="flashCounter">1 / 8</span>
+                </div>
+                <div>
+                  <h4 id="flashQuestion">Quantos bits possui um endereço IPv4?</h4>
+                  <p>Responda mentalmente e depois vire o cartão para conferir.</p>
+                </div>
+                <p class="helper-note">Dica: formule a resposta como se estivesse escrevendo na prova.</p>
+              </article>
+              <article class="flashface back">
+                <div class="flash-meta">
+                  <span class="flash-pill">Resposta</span>
+                  <span id="flashTopic">Fundamentos</span>
+                </div>
+                <div>
+                  <h4 id="flashAnswer">O IPv4 possui 32 bits divididos em 4 octetos.</h4>
+                  <p>Use a resposta para consolidar o raciocínio técnico e a linguagem curta.</p>
+                </div>
+                <p class="helper-note">A precisão da explicação ajuda muito em questões discursivas e de prova prática.</p>
+              </article>
+            </div>
+          </div>
+
+          <aside class="flash-sidebar">
+            <h4>Como usar</h4>
+            <ul>
+              <li>Leia a pergunta e tente responder antes de virar.</li>
+              <li>Compare sua resposta com a formulação ideal.</li>
+              <li>Avance pelos temas fundamentais de subnetting.</li>
+            </ul>
+            <div class="progress">
+              <p id="progressLabel">Progresso: 1 de 8 cartões</p>
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+            <div class="flash-controls">
+              <button class="btn primary" id="flipButton" type="button">Virar Cartão</button>
+              <button class="btn secondary" id="nextButton" type="button">Próximo</button>
+              <button class="btn secondary" id="prevButton" type="button">Anterior</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -1251,12 +1419,67 @@
     const quizExplanationText = document.getElementById("quizExplanationText");
     const quizFinalScore = document.getElementById("quizFinalScore");
     const quizFinalMessage = document.getElementById("quizFinalMessage");
+    const flashcardEl = document.getElementById("flashcard");
+    const flashQuestionEl = document.getElementById("flashQuestion");
+    const flashAnswerEl = document.getElementById("flashAnswer");
+    const flashCounterEl = document.getElementById("flashCounter");
+    const flashTopicEl = document.getElementById("flashTopic");
+    const progressLabelEl = document.getElementById("progressLabel");
+    const progressFillEl = document.getElementById("progressFill");
+    const flipButton = document.getElementById("flipButton");
+    const nextButton = document.getElementById("nextButton");
+    const prevButton = document.getElementById("prevButton");
 
     let questoesDoSimulado = [];
     let indiceQuestaoAtual = 0;
     let pontuacaoQuiz = 0;
     let respostaJaSelecionada = false;
     let assinaturaUltimoSimulado = "";
+    let currentFlashIndex = 0;
+    let isFlashFlipped = false;
+
+    const flashcards = [
+      {
+        topic: "Fundamentos",
+        question: "Quantos bits possui um endereço IPv4?",
+        answer: "O IPv4 possui 32 bits divididos em 4 octetos."
+      },
+      {
+        topic: "Classes",
+        question: "Qual é a faixa privada clássica da Classe C?",
+        answer: "A faixa privada clássica da Classe C é 192.168.x.x, com máscara padrão /24."
+      },
+      {
+        topic: "Governança",
+        question: "Qual entidade está no topo da governança global de endereços IP?",
+        answer: "A IANA gerencia o topo da distribuição global e repassa aos registros regionais, como o LACNIC."
+      },
+      {
+        topic: "Subnetting",
+        question: "Qual fórmula usamos para descobrir quantos bits emprestar para criar sub-redes?",
+        answer: "Usamos 2^n >= redes desejadas, em que n é a quantidade de bits emprestados."
+      },
+      {
+        topic: "Hosts",
+        question: "Qual fórmula calcula a quantidade de hosts por sub-rede?",
+        answer: "A fórmula é 2^h - 2, porque o primeiro IP é a rede e o último é o broadcast."
+      },
+      {
+        topic: "Máscara",
+        question: "O que acontece com uma rede Classe C /24 quando emprestamos 2 bits?",
+        answer: "Ela vira /26, que em decimal corresponde a 255.255.255.192."
+      },
+      {
+        topic: "Salto",
+        question: "Como descobrir rapidamente o salto entre as redes?",
+        answer: "Subtraia de 256 o valor da nova máscara no octeto alterado."
+      },
+      {
+        topic: "Tabela",
+        question: "Como calcular o broadcast de uma sub-rede na tabela?",
+        answer: "O broadcast é sempre o endereço imediatamente anterior ao início da próxima rede."
+      }
+    ];
 
     function embaralharArray(array) {
       const copia = [...array];
@@ -1412,9 +1635,41 @@
       renderizarQuestaoAtual();
     }
 
+    function renderFlashcard() {
+      const card = flashcards[currentFlashIndex];
+      const total = flashcards.length;
+      const progress = ((currentFlashIndex + 1) / total) * 100;
+
+      flashQuestionEl.textContent = card.question;
+      flashAnswerEl.textContent = card.answer;
+      flashTopicEl.textContent = card.topic;
+      flashCounterEl.textContent = `${currentFlashIndex + 1} / ${total}`;
+      progressLabelEl.textContent = `Progresso: ${currentFlashIndex + 1} de ${total} cartões`;
+      progressFillEl.style.width = `${progress}%`;
+    }
+
+    function toggleFlashcard() {
+      isFlashFlipped = !isFlashFlipped;
+      flashcardEl.classList.toggle("is-flipped", isFlashFlipped);
+      flipButton.textContent = isFlashFlipped ? "Ver Pergunta" : "Virar Cartão";
+    }
+
+    function goToFlashcard(direction) {
+      currentFlashIndex = (currentFlashIndex + direction + flashcards.length) % flashcards.length;
+      isFlashFlipped = false;
+      flashcardEl.classList.remove("is-flipped");
+      flipButton.textContent = "Virar Cartão";
+      renderFlashcard();
+    }
+
     startQuizButton.addEventListener("click", iniciarSimulado);
     nextQuizButton.addEventListener("click", avancarQuestao);
     restartQuizButton.addEventListener("click", iniciarSimulado);
+    flipButton.addEventListener("click", toggleFlashcard);
+    nextButton.addEventListener("click", () => goToFlashcard(1));
+    prevButton.addEventListener("click", () => goToFlashcard(-1));
+
+    renderFlashcard();
   </script>
 </body>
 </html>
